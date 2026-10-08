@@ -1,116 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import ZatcaSection from './components/ZatcaSection';
-import ModulesShowcase from './components/ModulesShowcase';
-import SuperpowersSection from './components/SuperpowersSection';
-import PricingSection from './components/PricingSection';
-import IndustriesSection from './components/IndustriesSection';
-import FaqSection from './components/FaqSection';
-import ContactSection from './components/ContactSection';
-import Footer from './components/Footer';
-import FloatingWhatsApp from './components/FloatingWhatsApp';
-import InteractiveDemoModal from './components/InteractiveDemoModal';
-import { translations } from './data/translations';
+import { useEffect, useState } from 'react';
+import {
+  ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Boxes,
+  Check, CheckCircle2, ChevronDown, FileCheck2, Globe2, Languages,
+  Menu, MessageCircle, PackageCheck, ReceiptText, ShieldCheck,
+  Store, WalletCards, Warehouse, X,
+} from 'lucide-react';
+import { getWhatsAppLink, siteConfig } from './data/config';
+import './landing.css';
+
+const copy = {
+  en: {
+    nav: [['#platform', 'Platform'], ['#capabilities', 'Capabilities'], ['#zatca', 'ZATCA'], ['#contact', 'Contact']], navCta: 'Talk to our team', language: 'العربية',
+    eyebrow: 'A clearer view of your business', headlineA: 'Run the business.', headlineB: 'Not the paperwork.',
+    intro: 'Bring sales, purchasing, inventory and accounting together in one practical ERP—built for the way businesses in Saudi Arabia work.', primary: 'Talk to our team', secondary: 'Explore the platform', note: 'Arabic + English · Saudi e-invoicing workflows · Built for day-to-day operations',
+    sample: 'Illustrative preview', workspace: 'Workspace', sales: 'Sales', purchases: 'Purchases', inventory: 'Inventory', accounts: 'Accounts', newInvoice: 'Sales invoice', draft: 'Example', invoiceNo: 'Document', date: 'Date', customer: 'Customer', sampleCustomer: 'Al Noor Trading', item: 'Product', qty: 'Qty', unitPrice: 'Unit price', amount: 'Amount', subtotal: 'Subtotal', vat: 'VAT', total: 'Total due', draftNote: 'Example screen · Values shown are illustrative',
+    strip: ['Sales & invoicing', 'Stock across warehouses', 'Financial reporting', 'Arabic & English'], overline: 'One system. Connected work.', platformTitle: 'The everyday work of your business, in one place.', platformText: 'EasyERP connects the work that often gets split across spreadsheets and separate systems—from a customer order to stock movement, payments and the books.', platformCta: 'See how it fits your business',
+    capEyebrow: 'Made for practical work', capTitle: 'The core of your operation, connected.', capText: 'Move from recording transactions to understanding what is happening across the business.',
+    modules: [
+      { id: 'sales', icon: ReceiptText, title: 'Sell and serve customers', text: 'Create sales invoices, quotations, sales orders and returns. Keep customer balances, collections and invoice history close at hand.', bullets: ['Sales and return workflows', 'Quotations and sales orders', 'Receivables and invoice history'] },
+      { id: 'stock', icon: Boxes, title: 'Know what is in stock', text: 'Maintain item and barcode details, follow stock by warehouse, record transfers and review movement with dedicated reports.', bullets: ['Item, group and unit masters', 'Opening stock and warehouse transfers', 'Stock and movement reports'] },
+      { id: 'finance', icon: WalletCards, title: 'Keep the numbers in view', text: 'Record purchases and payments, organize accounts, and review your financial position through built-in accounting reports.', bullets: ['Purchases and supplier payables', 'Accounts and journal vouchers', 'Trial balance, P&L and cash flow'] },
+      { id: 'control', icon: BarChart3, title: 'Give teams useful oversight', text: 'Manage users, privileges, branches and business settings, with operational and financial reporting for day-to-day decisions.', bullets: ['User privileges and company setup', 'Branch and session management', 'Invoice, VAT and customer reports'] },
+    ],
+    flowEyebrow: 'A connected workflow', flowTitle: 'From the first line item to the final report.', flowText: 'A sale is more than an invoice. EasyERP brings related operational and financial work into the same system.', steps: [['01', 'Record', 'Create a sale, purchase or stock document with the details your team needs.'], ['02', 'Connect', 'Keep customer, item, warehouse and payment information connected to the transaction.'], ['03', 'Review', 'Use reports to follow invoices, stock movement and financial activity.']],
+    zatcaLabel: 'Saudi Arabia · E-invoicing', zatcaTitle: 'E-invoicing that is part of the workflow.', zatcaText: 'Issue tax invoices with ZATCA Phase 1 and Phase 2 workflows integrated into your operations, including QR-enabled documents and Phase 2 submission status tracking.', zatcaPoints: ['Phase 1 invoice QR generation', 'Phase 2 submission and status tracking', 'VAT and invoice reporting'], zatcaFoot: 'Ask our team about your business setup and implementation.',
+    fitEyebrow: 'For the way you trade', fitTitle: 'Useful from the counter to the back office.', fitText: 'A broad operational toolkit for retailers, wholesalers and businesses managing purchasing, inventory and accounts.', fitItems: [['Retail', 'Invoices, item lookup and stock visibility'], ['Wholesale', 'Quotations, sales orders and customer accounts'], ['Multi-warehouse', 'Transfers and warehouse-specific stock reports'], ['Finance teams', 'Ledgers, vouchers and financial statements']],
+    contactEyebrow: 'Start a conversation', contactTitle: 'Let’s talk about how your team works.', contactText: 'Tell us a little about your business. We’ll open WhatsApp with your enquiry ready to send—nothing is submitted or stored on this website.', name: 'Your name', phone: 'Your WhatsApp number', company: 'Business name', interest: 'What would you like to discuss?', interestOptions: ['Book a product demo', 'Plans and pricing', 'Setup and onboarding', 'Something else'], message: 'Add a note (optional)', send: 'Continue in WhatsApp', emailLabel: 'Email', whatsAppLabel: 'WhatsApp',
+    faqTitle: 'A few useful answers', faqs: [['Can I use EasyERP in Arabic and English?', 'Yes. The application includes English and Arabic language support, including right-to-left layouts.'], ['Does EasyERP support ZATCA e-invoicing?', 'EasyERP supports Phase 1 and Phase 2 e-invoicing workflows. Contact us to discuss the requirements for your business and setup.'], ['Can EasyERP manage more than one warehouse?', 'The application includes warehouse stock reporting and stock transfer workflows. Contact us to discuss how your locations should be configured.'], ['How do I see the software?', 'Send us a WhatsApp enquiry and we can discuss arranging a walkthrough around your business needs.']], footerLine: 'Business management software for Saudi Arabia.', backTop: 'Back to top',
+  },
+  ar: {
+    nav: [['#platform', 'المنصة'], ['#capabilities', 'الإمكانات'], ['#zatca', 'الفوترة الإلكترونية'], ['#contact', 'تواصل']], navCta: 'تحدث مع فريقنا', language: 'English',
+    eyebrow: 'رؤية أوضح لأعمالك', headlineA: 'أدر أعمالك.', headlineB: 'واترك عنك تعقيد العمليات.', intro: 'اجمع المبيعات والمشتريات والمخزون والمحاسبة في نظام عملي واحد، صُمم ليتناسب مع طريقة عمل المنشآت في المملكة العربية السعودية.', primary: 'تحدث مع فريقنا', secondary: 'اكتشف المنصة', note: 'عربي وإنجليزي · مسارات فوترة إلكترونية سعودية · لإدارة العمليات اليومية',
+    sample: 'معاينة توضيحية', workspace: 'مساحة العمل', sales: 'المبيعات', purchases: 'المشتريات', inventory: 'المخزون', accounts: 'الحسابات', newInvoice: 'فاتورة مبيعات', draft: 'مثال توضيحي', invoiceNo: 'المستند', date: 'التاريخ', customer: 'العميل', sampleCustomer: 'شركة النور التجارية', item: 'الصنف', qty: 'الكمية', unitPrice: 'سعر الوحدة', amount: 'المبلغ', subtotal: 'المجموع الفرعي', vat: 'ضريبة القيمة المضافة', total: 'الإجمالي المستحق', draftNote: 'شاشة توضيحية · القيم المعروضة افتراضية',
+    strip: ['المبيعات والفوترة', 'المخزون والمستودعات', 'التقارير المالية', 'العربية والإنجليزية'], overline: 'نظام واحد. عمليات مترابطة.', platformTitle: 'أعمالك اليومية، منظّمة في مكان واحد.', platformText: 'يربط EasyERP العمليات التي غالباً ما تتوزع بين الجداول والأنظمة المنفصلة؛ من طلب العميل إلى حركة المخزون والمدفوعات والقيود المالية.', platformCta: 'اكتشف ما يناسب نشاطك',
+    capEyebrow: 'مصمم للاستخدام العملي', capTitle: 'أساسيات عملك، في منظومة مترابطة.', capText: 'انتقل من تسجيل العمليات إلى فهم ما يحدث في مختلف جوانب المنشأة.',
+    modules: [
+      { id: 'sales', icon: ReceiptText, title: 'أدر المبيعات وخدمة العملاء', text: 'أنشئ فواتير المبيعات وعروض الأسعار وأوامر البيع والمرتجعات. تابع أرصدة العملاء والتحصيلات وسجل الفواتير.', bullets: ['المبيعات والمرتجعات', 'عروض الأسعار وأوامر البيع', 'الذمم المدينة وسجل الفواتير'] },
+      { id: 'stock', icon: Boxes, title: 'تابع حركة المخزون', text: 'أنشئ بيانات الأصناف والباركود، وتابع الكميات حسب المستودع، وسجل التحويلات وراجع تقارير الحركة.', bullets: ['الأصناف والمجموعات والوحدات', 'المخزون الافتتاحي والتحويلات', 'تقارير المخزون والحركة'] },
+      { id: 'finance', icon: WalletCards, title: 'تابع حساباتك المالية', text: 'سجل المشتريات والمدفوعات، ونظّم الحسابات، وراجع وضعك المالي عبر التقارير المحاسبية.', bullets: ['المشتريات ومستحقات الموردين', 'الحسابات والقيود اليومية', 'ميزان المراجعة والأرباح والتدفقات'] },
+      { id: 'control', icon: BarChart3, title: 'امنح فريقك رؤية أوضح', text: 'أدر المستخدمين والصلاحيات والفروع وإعدادات المنشأة، مع تقارير تشغيلية ومالية للقرارات اليومية.', bullets: ['صلاحيات المستخدمين وإعداد المنشأة', 'إدارة الفروع والجلسات المالية', 'تقارير الفواتير والضريبة والعملاء'] },
+    ],
+    flowEyebrow: 'سير عمل مترابط', flowTitle: 'من أول صنف إلى التقرير النهائي.', flowText: 'البيع ليس مجرد فاتورة. يجمع EasyERP العمليات التشغيلية والمالية المرتبطة ضمن النظام نفسه.', steps: [['٠١', 'سجّل', 'أنشئ مستند بيع أو شراء أو مخزون بتفاصيل تناسب احتياج فريقك.'], ['٠٢', 'اربط', 'احتفظ ببيانات العميل والصنف والمستودع والدفع مرتبطة بالعملية.'], ['٠٣', 'راجع', 'استخدم التقارير لمتابعة الفواتير وحركة المخزون والنشاط المالي.']],
+    zatcaLabel: 'المملكة العربية السعودية · الفوترة الإلكترونية', zatcaTitle: 'الفوترة الإلكترونية جزء من سير عملك.', zatcaText: 'أصدر الفواتير الضريبية ضمن مسارات الفوترة الإلكترونية للمرحلتين الأولى والثانية، بما يشمل مستندات رمز QR ومتابعة حالة الإرسال للمرحلة الثانية.', zatcaPoints: ['إنشاء رمز QR لفواتير المرحلة الأولى', 'إرسال المرحلة الثانية ومتابعة الحالة', 'تقارير الضريبة والفواتير'], zatcaFoot: 'تواصل معنا لمناقشة إعداد منشأتك ومتطلبات التطبيق.',
+    fitEyebrow: 'لأنشطة تجارية متنوعة', fitTitle: 'من نقطة البيع إلى المكتب المالي.', fitText: 'مجموعة متكاملة من الأدوات التشغيلية لمتاجر التجزئة وتجارة الجملة والمنشآت التي تدير الشراء والمخزون والحسابات.', fitItems: [['التجزئة', 'فواتير وبيانات أصناف ومتابعة المخزون'], ['الجملة', 'عروض أسعار وأوامر بيع وحسابات العملاء'], ['مستودعات متعددة', 'تحويلات وتقارير مخزون حسب المستودع'], ['الفرق المالية', 'دفاتر وسندات وقوائم مالية']],
+    contactEyebrow: 'لنبدأ الحديث', contactTitle: 'أخبرنا كيف يعمل فريقك.', contactText: 'شاركنا نبذة عن نشاطك. سنفتح واتساب مع استفسارك جاهزاً للإرسال؛ لا يتم إرسال أو تخزين بياناتك على هذا الموقع.', name: 'الاسم', phone: 'رقم واتساب', company: 'اسم المنشأة', interest: 'ما الموضوع الذي ترغب بمناقشته؟', interestOptions: ['حجز عرض للنظام', 'الباقات والأسعار', 'الإعداد والبدء', 'موضوع آخر'], message: 'أضف ملاحظة (اختياري)', send: 'متابعة إلى واتساب', emailLabel: 'البريد الإلكتروني', whatsAppLabel: 'واتساب',
+    faqTitle: 'إجابات مفيدة', faqs: [['هل يدعم EasyERP اللغتين العربية والإنجليزية؟', 'نعم، يتضمن التطبيق اللغتين العربية والإنجليزية، مع دعم اتجاه الكتابة من اليمين إلى اليسار.'], ['هل يدعم EasyERP الفوترة الإلكترونية لزاتكا؟', 'يدعم EasyERP مسارات الفوترة الإلكترونية للمرحلتين الأولى والثانية. تواصل معنا لمناقشة متطلبات نشاطك وإعداد النظام.'], ['هل يمكن إدارة أكثر من مستودع؟', 'يتضمن التطبيق تقارير مخزون حسب المستودع ومسارات تحويل المخزون. تواصل معنا لمناقشة إعداد مواقعك.'], ['كيف يمكنني مشاهدة النظام؟', 'أرسل استفسارك عبر واتساب وسنناقش ترتيب عرض يتناسب مع احتياجات نشاطك.']], footerLine: 'نظام لإدارة الأعمال في المملكة العربية السعودية.', backTop: 'العودة إلى الأعلى',
+  },
+};
+
+const moduleNavIcons = [Store, Warehouse, WalletCards, BarChart3];
+
+function ProductPreview({ t, lang }) {
+  const productItems = [[t.item === 'الصنف' ? 'كابل نحاسي 4 مم' : 'Copper cable · 4 mm', 2, 420], [t.item === 'الصنف' ? 'مفتاح كهربائي' : 'Circuit breaker', 1, 180]];
+  const subtotal = productItems.reduce((sum, row) => sum + row[1] * row[2], 0);
+  const vat = subtotal * 0.15;
+  const total = subtotal + vat;
+  const fmt = (n) => new Intl.NumberFormat(lang === 'ar' ? 'ar-SA' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  return <div className="preview-wrap" aria-label={t.sample}>
+    <div className="preview-caption"><span className="live-dot" />{t.sample}<span className="preview-caption-line" /></div>
+    <div className="app-window"><div className="window-bar"><span className="window-dots"><i /><i /><i /></span><span className="window-brand">EasyERP <span>·</span> {t.workspace}</span><span className="window-status"><span className="status-dot" />{t.draft}</span></div>
+      <div className="app-layout"><aside className="app-sidebar"><div className="mini-mark">E</div><span className="side-item active"><ReceiptText /></span><span className="side-item"><Boxes /></span><span className="side-item"><WalletCards /></span><span className="side-item"><BarChart3 /></span><div className="sidebar-bottom"><Globe2 /></div></aside>
+        <div className="app-content"><div className="app-topline"><div><span className="crumb">{t.sales}</span><h3>{t.newInvoice}</h3></div><span className="example-pill"><span className="status-dot" />{t.draft}</span></div>
+          <div className="invoice-meta"><div><span>{t.invoiceNo}</span><b>SI-10482</b></div><div><span>{t.date}</span><b>18 Jun 2025</b></div><div><span>{t.customer}</span><b>{t.sampleCustomer}</b></div></div>
+          <div className="invoice-table"><div className="invoice-row table-head"><span>{t.item}</span><span>{t.qty}</span><span>{t.unitPrice}</span><span>{t.amount}</span></div>{productItems.map(([name, qty, price]) => <div className="invoice-row" key={name}><span>{name}</span><span>{qty}</span><span>{fmt(price)}</span><b>{fmt(qty * price)}</b></div>)}</div>
+          <div className="invoice-bottom"><div className="qr-tile"><div className="qr-pattern" aria-hidden="true">▦</div><span>QR</span></div><div className="invoice-totals"><div><span>{t.subtotal}</span><span>{fmt(subtotal)}</span></div><div><span>{t.vat} · 15%</span><span>{fmt(vat)}</span></div><div className="grand-total"><b>{t.total}</b><strong>{fmt(total)} <small>{lang === 'ar' ? 'ر.س' : 'SAR'}</small></strong></div></div></div>
+          <div className="preview-footnote"><ShieldCheck size={14} />{t.draftNote}</div>
+        </div>
+      </div>
+    </div><div className="preview-index"><span>01</span><span>—</span><span>{t.sales} / {t.inventory}</span></div>
+  </div>;
+}
 
 export default function App() {
-  // Saudi & GCC market default: Arabic first, instant toggle to English
-  const [lang, setLang] = useState(() => {
-    try {
-      const saved = localStorage.getItem('easyerp_site_lang');
-      if (saved === 'en' || saved === 'ar') return saved;
-    } catch (e) {}
-    return 'ar';
-  });
-
-  const [demoModalOpen, setDemoModalOpen] = useState(false);
-
-  useEffect(() => {
-    // Synchronize document direction and language attributes
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    try {
-      localStorage.setItem('easyerp_site_lang', lang);
-    } catch (e) {}
-  }, [lang]);
-
-  const t = translations[lang] || translations.ar;
-
-  return (
-    <div className="min-h-screen bg-[#fafbfd] text-slate-900 flex flex-col font-sans relative selection:bg-sky-500 selection:text-white">
-      
-      {/* Navigation */}
-      <Navbar 
-        lang={lang} 
-        setLang={setLang} 
-        t={t} 
-      />
-
-      {/* Main Content Sections */}
-      <main className="flex-1">
-        <Hero 
-          lang={lang} 
-          t={t} 
-          onOpenDemo={() => setDemoModalOpen(true)} 
-        />
-
-        <ZatcaSection 
-          lang={lang} 
-          t={t} 
-        />
-
-        <ModulesShowcase 
-          lang={lang} 
-          t={t} 
-          onOpenDemo={() => setDemoModalOpen(true)} 
-        />
-
-        <SuperpowersSection 
-          lang={lang} 
-          t={t} 
-        />
-
-        <PricingSection 
-          lang={lang} 
-          t={t} 
-        />
-
-        <IndustriesSection 
-          lang={lang} 
-          t={t} 
-        />
-
-        <FaqSection 
-          lang={lang} 
-          t={t} 
-        />
-
-        <ContactSection 
-          lang={lang} 
-          t={t} 
-        />
-      </main>
-
-      {/* Footer */}
-      <Footer 
-        lang={lang} 
-        t={t} 
-      />
-
-      {/* Speed Dial Floating WhatsApp Button */}
-      <FloatingWhatsApp 
-        lang={lang} 
-        t={t} 
-      />
-
-      {/* Interactive Live Preview Sandbox Modal */}
-      <InteractiveDemoModal 
-        isOpen={demoModalOpen} 
-        onClose={() => setDemoModalOpen(false)} 
-        lang={lang} 
-        t={t} 
-      />
-
-    </div>
-  );
+  const [lang, setLang] = useState(() => { try { return localStorage.getItem('easyerp_site_lang') === 'ar' ? 'ar' : 'en'; } catch { return 'en'; } });
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState(0);
+  const [activeModule, setActiveModule] = useState(0);
+  const [form, setForm] = useState({ name: '', phone: '', company: '', interest: '', message: '' });
+  const t = copy[lang];
+  const isAr = lang === 'ar';
+  useEffect(() => { document.documentElement.lang = lang; document.documentElement.dir = isAr ? 'rtl' : 'ltr'; try { localStorage.setItem('easyerp_site_lang', lang); } catch { /* storage may be disabled */ } }, [lang, isAr]);
+  const handleLead = (event) => {
+    event.preventDefault();
+    const lead = isAr ? `استفسار من موقع EasyERP\nالاسم: ${form.name}\nرقم واتساب: ${form.phone}\nالمنشأة: ${form.company || 'غير محدد'}\nالموضوع: ${form.interest}\nملاحظة: ${form.message || 'لا يوجد'}` : `EasyERP website enquiry\nName: ${form.name}\nWhatsApp: ${form.phone}\nBusiness: ${form.company || 'Not provided'}\nTopic: ${form.interest}\nNote: ${form.message || 'None'}`;
+    window.open(getWhatsAppLink(lang, lead), '_blank', 'noopener,noreferrer');
+  };
+  return <div className={`site-shell ${isAr ? 'site-ar' : 'site-en'}`}>
+    <header className="site-nav"><div className="nav-inner"><a className="brand" href="#top" aria-label="EasyERP home"><img src="/easyerplogobluetext.jpg" alt="EasyERP" /></a><nav className={`nav-links ${menuOpen ? 'is-open' : ''}`} aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}>{t.nav.map(([href, label]) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}</nav><div className="nav-actions"><button className="language-button" onClick={() => setLang((current) => current === 'ar' ? 'en' : 'ar')} aria-label={isAr ? 'Switch language to English' : 'تغيير اللغة إلى العربية'}><Languages size={16} /><span>{t.language}</span></button><a className="button button-nav" href="#contact">{t.navCta}<ArrowUpRight size={15} /></a><button className="menu-toggle" onClick={() => setMenuOpen((value) => !value)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>{menuOpen ? <X /> : <Menu />}</button></div></div></header>
+    <main id="top">
+      <section className="hero-section"><div className="hero-inner wrap"><div className="hero-copy"><div className="eyebrow"><span className="eyebrow-rule" />{t.eyebrow}</div><h1>{t.headlineA}<br /><span>{t.headlineB}</span></h1><p className="hero-intro">{t.intro}</p><div className="hero-actions"><a className="button button-primary" href="#contact">{t.primary}{isAr ? <ArrowLeft size={17} /> : <ArrowRight size={17} />}</a><a className="text-link" href="#capabilities">{t.secondary}<ArrowDown size={15} /></a></div><p className="hero-note"><CheckCircle2 size={15} />{t.note}</p></div><div className="hero-visual"><ProductPreview t={t} lang={lang} /></div></div><div className="hero-bottom wrap"><span className="hero-bottom-label">{isAr ? 'مصمم للأعمال في السعودية' : 'Designed for business in Saudi Arabia'}</span><div className="quick-list">{t.strip.map((item, index) => <span key={item}><i>0{index + 1}</i>{item}</span>)}</div></div></section>
+      <section id="platform" className="platform-section"><div className="wrap platform-grid"><div className="platform-heading"><p className="section-kicker">{t.overline}</p><h2>{t.platformTitle}</h2></div><div className="platform-copy"><p>{t.platformText}</p><a className="underlined-link" href="#capabilities">{t.platformCta}<ArrowUpRight size={16} /></a></div></div></section>
+      <section id="capabilities" className="capabilities-section"><div className="wrap"><div className="section-head"><div><p className="section-kicker">{t.capEyebrow}</p><h2>{t.capTitle}</h2></div><p>{t.capText}</p></div><div className="capability-layout"><div className="capability-tabs" role="tablist" aria-label={isAr ? 'مجالات النظام' : 'Product areas'}>{t.modules.map((module, index) => { const Icon = module.icon; return <button key={module.id} role="tab" aria-selected={activeModule === index} className={`capability-tab ${activeModule === index ? 'selected' : ''}`} onClick={() => setActiveModule(index)}><span className="tab-number">0{index + 1}</span><Icon size={19} /><span>{module.title}</span>{isAr ? <ArrowLeft className="tab-arrow" size={16} /> : <ArrowRight className="tab-arrow" size={16} />}</button>; })}</div><div className="capability-detail" role="tabpanel"><div className="detail-number">0{activeModule + 1}<span> / 04</span></div><div className="detail-body"><div className="detail-icon">{(() => { const Icon = t.modules[activeModule].icon; return <Icon size={22} />; })()}</div><h3>{t.modules[activeModule].title}</h3><p>{t.modules[activeModule].text}</p><ul>{t.modules[activeModule].bullets.map((bullet) => <li key={bullet}><Check size={15} />{bullet}</li>)}</ul><a className="underlined-link" href="#contact">{t.primary}<ArrowUpRight size={16} /></a></div><span className="detail-watermark">{['01', '02', '03', '04'][activeModule]}</span></div></div></div></section>
+      <section className="workflow-section"><div className="wrap workflow-grid"><div className="workflow-intro"><p className="section-kicker">{t.flowEyebrow}</p><h2>{t.flowTitle}</h2><p>{t.flowText}</p><a className="button button-light" href="#contact">{t.primary}{isAr ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}</a></div><div className="workflow-steps">{t.steps.map(([number, title, text], index) => { const Icon = [ReceiptText, PackageCheck, FileCheck2][index]; return <article className="workflow-step" key={number}><div className="step-mark"><span>{number}</span><Icon size={20} /></div><div><h3>{title}</h3><p>{text}</p></div><span className="step-connector" /></article>; })}</div></div></section>
+      <section id="zatca" className="zatca-section"><div className="wrap zatca-layout"><div className="zatca-seal"><div className="seal-orbit orbit-one" /><div className="seal-orbit orbit-two" /><div className="seal-center"><FileCheck2 size={32} /><span>ZATCA</span><b>PHASE 1 + 2</b></div><span className="seal-caption">{isAr ? 'الفوترة الإلكترونية' : 'E-INVOICING'}</span></div><div className="zatca-copy"><p className="section-kicker">{t.zatcaLabel}</p><h2>{t.zatcaTitle}</h2><p className="zatca-description">{t.zatcaText}</p><ul className="zatca-points">{t.zatcaPoints.map((point) => <li key={point}><CheckCircle2 size={17} />{point}</li>)}</ul><p className="zatca-foot"><ShieldCheck size={16} />{t.zatcaFoot}</p></div></div></section>
+      <section className="fit-section"><div className="wrap"><div className="fit-heading"><p className="section-kicker">{t.fitEyebrow}</p><h2>{t.fitTitle}</h2><p>{t.fitText}</p></div><div className="fit-list">{t.fitItems.map(([title, text], index) => { const Icon = moduleNavIcons[index]; return <article className="fit-item" key={title}><span className="fit-index">0{index + 1}</span><Icon size={19} /><h3>{title}</h3><p>{text}</p><ArrowUpRight className="fit-arrow" size={17} /></article>; })}</div></div></section>
+      <section id="contact" className="contact-section"><div className="wrap contact-layout"><div className="contact-copy"><p className="section-kicker">{t.contactEyebrow}</p><h2>{t.contactTitle}</h2><p>{t.contactText}</p><div className="contact-direct"><a href={`https://wa.me/${siteConfig.contact.whatsappNumber}`} target="_blank" rel="noreferrer"><MessageCircle size={18} /><span><small>{t.whatsAppLabel}</small><b>{siteConfig.contact.whatsappFormatted}</b></span><ArrowUpRight size={16} /></a><a href={`mailto:${siteConfig.contact.email}`}><Globe2 size={18} /><span><small>{t.emailLabel}</small><b>{siteConfig.contact.email}</b></span><ArrowUpRight size={16} /></a></div></div><form className="lead-form" onSubmit={handleLead}><div className="form-row"><label>{t.name}<input required autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></label><label>{t.phone}<input type="tel" required autoComplete="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></label></div><label>{t.company}<input autoComplete="organization" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} /></label><label>{t.interest}<select required value={form.interest} onChange={(e) => setForm({ ...form, interest: e.target.value })}><option value="" disabled>{isAr ? 'اختر موضوعاً' : 'Choose a topic'}</option>{t.interestOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label><label>{t.message}<textarea rows="3" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} /></label><button className="button button-primary form-submit" type="submit">{t.send}<MessageCircle size={17} /></button><p className="form-privacy"><ShieldCheck size={13} />{isAr ? 'سيتم فتح واتساب لإرسال رسالتك بعد مراجعتها.' : 'WhatsApp opens so you can review and send your message.'}</p></form></div></section>
+      <section className="faq-section"><div className="wrap faq-layout"><div><p className="section-kicker">EasyERP</p><h2>{t.faqTitle}</h2></div><div className="faq-list">{t.faqs.map(([question, answer], index) => <article className={`faq-item ${openFaq === index ? 'faq-open' : ''}`} key={question}><button onClick={() => setOpenFaq(openFaq === index ? -1 : index)} aria-expanded={openFaq === index}><span>{question}</span><ChevronDown size={18} /></button>{openFaq === index && <p>{answer}</p>}</article>)}</div></div></section>
+    </main>
+    <footer className="site-footer"><div className="wrap footer-top"><a className="brand footer-brand" href="#top"><img src="/easyerplogobluetext.jpg" alt="EasyERP" /></a><p>{t.footerLine}</p><a className="back-top" href="#top">{t.backTop}<ArrowUpRight size={15} /></a></div><div className="wrap footer-bottom"><span>© {new Date().getFullYear()} EasyERP</span><span>{siteConfig.contact.email}</span></div></footer>
+  </div>;
 }
