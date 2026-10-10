@@ -6,6 +6,7 @@ import {
   Store, WalletCards, Warehouse, X,
 } from 'lucide-react';
 import { getWhatsAppLink, siteConfig } from './data/config';
+import FloatingContact from './components/FloatingContact';
 import './landing.css';
 
 const copy = {
@@ -86,7 +87,7 @@ export default function App() {
     window.open(getWhatsAppLink(lang, lead), '_blank', 'noopener,noreferrer');
   };
   return <div className={`site-shell ${isAr ? 'site-ar' : 'site-en'}`}>
-    <header className="site-nav"><div className="nav-inner"><a className="brand" href="#top" aria-label="EasyERP home"><img src="/easyerplogobluetext.jpg" alt="EasyERP" /></a><nav className={`nav-links ${menuOpen ? 'is-open' : ''}`} aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}>{t.nav.map(([href, label]) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}</nav><div className="nav-actions"><button className="language-button" onClick={() => setLang((current) => current === 'ar' ? 'en' : 'ar')} aria-label={isAr ? 'Switch language to English' : 'تغيير اللغة إلى العربية'}><Languages size={16} /><span>{t.language}</span></button><a className="button button-nav" href="#contact">{t.navCta}<ArrowUpRight size={15} /></a><button className="menu-toggle" onClick={() => setMenuOpen((value) => !value)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>{menuOpen ? <X /> : <Menu />}</button></div></div></header>
+    <header className="site-nav"><div className="nav-inner"><a className="brand" href="#top" aria-label="EasyERP home"><img src="/easyerplogobluetext.jpg" alt="EasyERP" /></a><nav className={`nav-links ${menuOpen ? 'is-open' : ''}`} aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}>{t.nav.map(([href, label]) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}</nav><div className="nav-actions"><button className="language-button" onClick={() => setLang((current) => current === 'ar' ? 'en' : 'ar')} aria-label={isAr ? 'Switch language to English' : 'تغيير اللغة إلى العربية'}><Languages size={16} /><span>{t.language}</span></button><a className="button button-nav" href="#contact">{t.navCta}<ArrowUpRight size={16} /></a><button className="menu-toggle" onClick={() => setMenuOpen((value) => !value)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>{menuOpen ? <X size={20} /> : <Menu size={20} />}</button></div></div></header>
     <main id="top">
       <section className={`product-hero ${isAr ? 'product-hero-ar' : 'product-hero-en'}`}>
         <div className="product-hero-main">
@@ -112,5 +113,6 @@ export default function App() {
       <section className="faq-section"><div className="wrap faq-layout"><div><p className="section-kicker">EasyERP</p><h2>{t.faqTitle}</h2></div><div className="faq-list">{t.faqs.map(([question, answer], index) => <article className={`faq-item ${openFaq === index ? 'faq-open' : ''}`} key={question}><button onClick={() => setOpenFaq(openFaq === index ? -1 : index)} aria-expanded={openFaq === index}><span>{question}</span><ChevronDown size={18} /></button>{openFaq === index && <p>{answer}</p>}</article>)}</div></div></section>
     </main>
     <footer className="site-footer"><div className="wrap footer-top"><a className="brand footer-brand" href="#top"><img src="/easyerplogobluetext.jpg" alt="EasyERP" /></a><p>{t.footerLine}</p><a className="back-top" href="#top">{t.backTop}<ArrowUpRight size={15} /></a></div><div className="wrap footer-bottom"><span>© {new Date().getFullYear()} EasyERP</span><span>{siteConfig.contact.email}</span></div></footer>
+    <FloatingContact lang={lang} />
   </div>;
 }

@@ -6,7 +6,7 @@ export const siteConfig = {
     whatsappFormatted: '+966 53 836 1171',
     phone: '+966 53 836 1171',
     phoneClean: '+966538361171',
-    email: 'easyerpp@gmail.com',
+    email: 'crystalsolutionsit@gmail.com',
   },
 };
 
